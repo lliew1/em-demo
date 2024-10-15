@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Screen Map App</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        html, body, #map {
+            height: 100%;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map
+        const map = L.map('map').fitWorld();
+
+        // Set up the tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+        }).addTo(map);
+
+        // Locate the user
+        map.locate({setView: true, maxZoom: 16});
+
+        // Event listener for map clicks
+        map.on('click', function(e) {
+            const radius = prompt("Enter the radius of the circle in meters:", "100");
+            if (radius) {
+                L.circle(e.latlng, { radius: parseInt(radius) }).addTo(map);
+            }
+        });
+
+        // Handle location found
+        map.on('locationfound', function(e) {
+            L.marker(e.latlng).addTo(map)
+                .bindPopup("You are here").openPopup();
+        });
+
+        // Handle location error
+        map.on('locationerror', function(e) {
+            alert(e.message);
+        });
+    </script>
+</body>
+</html>
